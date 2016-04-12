@@ -8,13 +8,14 @@
 #include <Stream.h>
 
 #define DEFAULT_WAIT_TIME 120
+#define DEFAULT_SF 7
 #define DEFAULT_FSB 7
 
 #ifndef PWRIDX_868
   #define PWRIDX_868 1
 #endif
 #ifndef PWRIDX_915
-  #define PWRIDX_915 5
+  #define PWRIDX_915 1
 #endif
 
 #define debugPrintLn(...) { if (debugStream) debugStream->println(__VA_ARGS__); }
@@ -37,7 +38,7 @@ class TheThingsUno
 
   public:
     void init(Stream& modemStream, Stream& debugStream);
-    void reset(bool adr = true, int fsb = DEFAULT_FSB);
+    void reset(bool adr = true, int sf = DEFAULT_SF, int fsb = DEFAULT_FSB);
     bool personalize(const byte devAddr[4], const byte nwkSKey[16], const byte appSKey[16]);
     bool join(const byte appEui[8], const byte appKey[16]);
     void sendBytes(const byte* buffer, int length, int port = 1, bool confirm = false);

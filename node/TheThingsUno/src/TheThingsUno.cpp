@@ -80,7 +80,7 @@ bool TheThingsUno::sendCommand(String cmd, const byte *buf, int length, int wait
   return waitForOK(waitTime);
 }
 
-void TheThingsUno::reset(bool adr, int fsb) {
+void TheThingsUno::reset(bool adr, int sf, int fsb) {
   modemStream->println("sys reset");
   String version = readLine(3000);
   if (version == "") {
@@ -93,25 +93,70 @@ void TheThingsUno::reset(bool adr, int fsb) {
 
   sendCommand("mac set adr " + String(adr ? "on" : "off"));
 
-  if (model == "RN2483")
+  int dr = -1;
+  if (model == "RN2483") {
     sendCommand("mac set pwridx " + String(PWRIDX_868));
+
+    switch (sf) {
+      case 7:
+        dr = 5;
+        break;
+      case 8:
+        dr = 4;
+        break;
+      case 9:
+        dr = 3;
+        break;
+      case 10:
+        dr = 2;
+        break;
+      case 11:
+        dr = 1;
+        break;
+      case 12:
+        dr = 0;
+        break;
+      default:
+        debugPrintLn("Invalid SF")
+        break;
+    }
+  }
   else if (model == "RN2903") {
     sendCommand("mac set pwridx " + String(PWRIDX_915));
     enableFsbChannels(fsb);
+
+    switch (sf) {
+      case 7:
+        dr = 3;
+        break;
+      case 8:
+        dr = 2;
+        break;
+      case 9:
+        dr = 1;
+        break;
+      case 10:
+        dr = 0;
+        break;
+      default:
+        debugPrintLn("Invalid SF")
+        break;
+    }
   }
+
+  if (dr > -1)
+    sendCommand("mac set dr " + String(dr));
 }
 
 bool TheThingsUno::enableFsbChannels(int fsb) {
   int chLow = fsb > 0 ? (fsb - 1) * 8 : 0;
   int chHigh = fsb > 0 ? chLow + 7 : 71;
 
-  for (int i = 0; i < 72; i++) {
-    String command = "mac set ch status " + String(i);
+  for (int i = 0; i < 72; i++)
     if (i == 70 || chLow <= i && i <= chHigh)
       sendCommand("mac set ch status " + String(i) + " on");
     else
       sendCommand("mac set ch status " + String(i) + " off");
-  }
   return true;
 }
 
