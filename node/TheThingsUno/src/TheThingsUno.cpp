@@ -176,16 +176,19 @@ bool TheThingsUno::personalize(const byte devAddr[4], const byte nwkSKey[16], co
 }
 
 bool TheThingsUno::join(const byte appEui[8], const byte appKey[16]) {
+  String devEui = readValue("sys get hweui");
   sendCommand("mac set appeui", appEui, 8);
+  sendCommand("mac set deveui " + devEui)
   sendCommand("mac set appkey", appKey, 16);
   sendCommand("mac join otaa");
 
-  if (readLine(10000) != "accepted") {
+  String response = readLine(10000);
+  if (response != "accepted") {
     debugPrintLn("Join not accepted");
     return false;
   }
 
-  debugPrintLn("Join accepted. Status: " + readValue("mac get status"));
+  debugPrintLn("Join accepted: " + response + ". Status: " + readValue("mac get status"));
   return true;
 }
 
@@ -200,7 +203,7 @@ void TheThingsUno::sendBytes(const byte* buffer, int length, int port, bool conf
     debugPrintLn("Time-out")
   else if (response == "mac_tx_ok")
     debugPrintLn("Successful transmission")
-  //else if (response starts with "mac_rx_ok") // TODO: Handle downlink
+  //else if (response starts with "mac_rx") // TODO: Handle downlink
   else
     debugPrintLn("Unexpected response: " + response);
 }
@@ -221,8 +224,6 @@ void TheThingsUno::showStatus() {
   debugPrintLn("DevAddr: " + readValue("mac get devaddr"));
 
   if (this->model == "RN2483") {
-    // TODO: Test this
-    debugPrintLn("Channel: " + readValue("mac get ch"));
     debugPrintLn("Band: " + readValue("mac get band"));
   }
 
