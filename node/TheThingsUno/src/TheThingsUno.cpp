@@ -178,7 +178,7 @@ bool TheThingsUno::personalize(const byte devAddr[4], const byte nwkSKey[16], co
 bool TheThingsUno::join(const byte appEui[8], const byte appKey[16]) {
   String devEui = readValue("sys get hweui");
   sendCommand("mac set appeui", appEui, 8);
-  sendCommand("mac set deveui " + devEui)
+  sendCommand("mac set deveui " + devEui);
   sendCommand("mac set appkey", appKey, 16);
   sendCommand("mac join otaa");
 
