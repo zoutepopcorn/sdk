@@ -20,9 +20,9 @@ void setup()
   loraSerial.begin(57600);
 
   delay(3000);
-  
+
   ttu.init(loraSerial, debugSerial); //Initializing...
-  
+
   ttu.reset();
   ttu.personalize(devAddr, nwkSKey, appSKey);
   ttu.showStatus();
@@ -35,5 +35,5 @@ void setup()
 void loop() {
   ttu.sendString("Hello world!");
 
-  delay(5000);
+  delay(20000);
 }

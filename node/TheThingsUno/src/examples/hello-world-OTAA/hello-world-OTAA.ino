@@ -32,5 +32,5 @@ void setup()
 void loop() {
   ttu.sendString("Hello world!");
 
-  delay(5000);
+  delay(20000);
 }
