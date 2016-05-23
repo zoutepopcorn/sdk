@@ -20,7 +20,7 @@ void setup()
   delay(1000);
   ttu.init(loraSerial, SerialUSB); //Initializing...
   ttu.reset();
-  ttu.join(appEui, appSKey);
+  ttu.join(appEui, appKey);
 
   delay(6000);
   ttu.showStatus();
