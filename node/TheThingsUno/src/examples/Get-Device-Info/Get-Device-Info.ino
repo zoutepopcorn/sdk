@@ -1,5 +1,3 @@
-#define DEBUG
-
 #include "TheThingsUno.h"
 
 #define debugSerial Serial
