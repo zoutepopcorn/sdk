@@ -1,5 +1,5 @@
 {
-  "name": "node-red-contrib-ttn",
+  "name": "@thethingsnetwork/node-red-contrib-ttn",
   "version": "0.0.1",
   "description": "node-RED node for TTN applications",
   "main": "index.js",
@@ -18,7 +18,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [ "node-red", "TTN", "The Things Network" ],
+  "keywords": [
+    "node-red",
+    "TTN",
+    "The Things Network"
+  ],
   "author": "Romeo Van Snick <romeo@thethingsnetwork.org>",
   "license": "MIT",
   "node-red": {
