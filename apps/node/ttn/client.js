@@ -7,31 +7,25 @@ const EventEmitter = require('events');
 const Client = class Client extends EventEmitter {
   constructor(broker, appEUI, appAccessKey) {
     super();
-    this.broker = broker;
-    this.appEUI = appEUI;
-    this.appAccessKey = appAccessKey;
+    this.client = mqtt.connect(util.format('mqtt://%s', broker), {
+      username: appEUI,
+      password: appAccessKey
+    });
+    this.client.on('connect', this._connected.bind(this));
+    this.client.on('message', this._handleMessage.bind(this));
+    this.client.on('error', this._error.bind(this));
   }
 
-  connect() {
-    console.log('Connecting to %s...', this.broker);
-    var client = mqtt.connect(util.format('mqtt://%s', this.broker), {
-      username: this.appEUI,
-      password: this.appAccessKey
-    });
-
-    client.on('connect', function () {
-      console.log('Connected to MQTT broker. Subscribing...');
-      client.subscribe(['+/devices/+/activations', '+/devices/+/up']);
-    });
-
-    client.on('message', this.handleMessage.bind(this));
-
-    client.on('error', function (err) {
-      console.warn('MQTT error: %s', err);
-    });
+  end() {
+    this.client.end();
   }
 
-  handleMessage(topic, message) {
+  _connected() {
+    super.emit('connect');
+    this.client.subscribe(['+/devices/+/activations', '+/devices/+/up']);
+  }
+
+  _handleMessage(topic, message) {
     var parts = topic.split('/');
     if (parts.length < 4)
       return;
@@ -53,6 +47,10 @@ const Client = class Client extends EventEmitter {
           });
         break;
     }
+  }
+
+  _error(err) {
+    super.emit('error', err);
   }
 }
 
