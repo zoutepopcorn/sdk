@@ -1,5 +1,5 @@
 {
-  "name": "@thethingsnetwork/node-red-contrib-ttn",
+  "name": "node-red-contrib-ttn",
   "version": "0.0.1",
   "description": "node-RED node for TTN applications",
   "main": "index.js",
