@@ -21,6 +21,9 @@
 #define debugPrintLn(...) { if (debugStream) debugStream->println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugStream) debugStream->print(__VA_ARGS__); }
 
+#define HEX_CHAR_TO_NIBBLE(c) ((c >= 'A') ? (c - 'A' + 0x0A) : (c - '0'))
+#define HEX_PAIR_TO_BYTE(h, l) ((HEX_CHAR_TO_NIBBLE(h) << 4) + HEX_CHAR_TO_NIBBLE(l))
+
 class TheThingsUno
 {
   private:
@@ -37,12 +40,14 @@ class TheThingsUno
     bool enableFsbChannels(int fsb);
 
   public:
+    int downlinkPort;
+    byte downlink[64];
     void init(Stream& modemStream, Stream& debugStream);
     void reset(bool adr = true, int sf = DEFAULT_SF, int fsb = DEFAULT_FSB);
     bool personalize(const byte devAddr[4], const byte nwkSKey[16], const byte appSKey[16]);
     bool join(const byte appEui[8], const byte appKey[16]);
-    void sendBytes(const byte* buffer, int length, int port = 1, bool confirm = false);
-    void sendString(String message, int port = 1, bool confirm = false);
+    int sendBytes(const byte* buffer, int length, int port = 1, bool confirm = false);
+    int sendString(String message, int port = 1, bool confirm = false);
     void showStatus();
 };
 

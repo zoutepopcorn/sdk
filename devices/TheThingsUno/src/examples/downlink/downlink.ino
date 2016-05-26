@@ -18,7 +18,7 @@ void setup()
   loraSerial.begin(57600);
 
   delay(1000);
-  ttu.init(loraSerial, debugSerial);
+  ttu.init(loraSerial, debugSerial); //Initializing...
   ttu.reset();
   ttu.join(appEui, appKey);
 
@@ -30,7 +30,19 @@ void setup()
 }
 
 void loop() {
-  ttu.sendString("Hello world!");
+  // Send a byte
+  byte buf[1];
+  buf[0] = 20;
+  int downlinkBytes = ttu.sendBytes(buf, 1);
+
+  if (downlinkBytes > 0) {
+    debugPrintLn("Received " + String(downlinkBytes) + " bytes")
+    // Print the received bytes
+    for (int i = 0; i < downlinkBytes; i++) {
+      debugPrint(String(ttu.downlink[i]) + " ");
+    }
+    debugPrintLn();
+  }
 
   delay(20000);
 }

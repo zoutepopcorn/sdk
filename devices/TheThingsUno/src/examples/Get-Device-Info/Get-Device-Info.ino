@@ -12,7 +12,7 @@ void setup()
 
   delay(3000);
 
-  ttu.init(loraSerial, debugSerial);  //Initializing...
+  ttu.init(loraSerial, debugSerial);
 }
 
 void loop()
