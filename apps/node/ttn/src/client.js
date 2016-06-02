@@ -38,10 +38,10 @@ const Client = class Client extends EventEmitter {
         });
         break;
       case 'up':
-        if (payload.payload)
+        if (payload.fields || payload.payload)
           super.emit('uplink', {
             devEUI: parts[2],
-            fields: payload.payload,
+            fields: payload.fields || payload.payload,
             counter: payload.counter,
             metadata: payload.metadata[0]
           });
