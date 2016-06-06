@@ -21,7 +21,7 @@ var appEUI = '70E3DD5EB00001DA';
 var accessKey = 'Wy4BJkrOERq8Sm1UgNIR7zdK/DjfuEHZ3n3VM3NnUa0=';
 var client = new ttn.Client('staging.thethingsnetwork.org', appEUI, accessKey);
 
-client.on('message', function (msg) {
+client.on('uplink', function (msg) {
   // These are messages sent by devices on The Things Network
   // msg = {
   //  devEUI: '00000000973572D0',
@@ -45,6 +45,12 @@ client.on('error', function (err) {
 // close the client:
 client.close()
 ```
+
+The `fields` on the `uplink` event will be either filled with:
+
+- The result of the payload function tranformation if there are payload
+  functions set for the application, or
+- The plain, untransformed payload.
 
 
 ## API
