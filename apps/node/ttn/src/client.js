@@ -40,7 +40,7 @@ const Client = class Client extends EventEmitter {
       case 'up':
         super.emit('uplink', {
           devEUI: parts[2],
-          fields: payload.fields || payload.payload,
+          fields: payload.fields || { raw: payload.payload },
           counter: payload.counter,
           metadata: payload.metadata[0]
         });
