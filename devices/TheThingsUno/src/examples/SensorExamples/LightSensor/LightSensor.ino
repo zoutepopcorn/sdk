@@ -4,6 +4,12 @@
 const byte appEui[8] = { <insert AppEui> }; //for example: {0x70, 0xB3, 0xD5, 0x7E, 0xE0, 0xE0, 0x01, 0x4A1};
 const byte appKey[16] = { <insert AppKey> }; //for example: {0x73, 0x6D, 0x24, 0xD2, 0x69, 0xBE, 0xE3, 0xAE, 0x0E, 0xCE, 0xF0, 0xBB, 0x6C, 0xA4, 0xBA, 0xFE};
 
+//define AnalogPin for sensor
+#define LightPin A0
+
+//data array for transmitting data
+byte data[2];
+
 #define debugSerial Serial
 #define loraSerial Serial1
 
@@ -12,15 +18,22 @@ const byte appKey[16] = { <insert AppKey> }; //for example: {0x73, 0x6D, 0x24, 0
 
 TheThingsUno ttu;
 
-void setup()
-{
+void setup() {
   debugSerial.begin(115200);
   loraSerial.begin(57600);
+
+  pinMode(LightPin, INPUT);
 
   delay(1000);
   ttu.init(loraSerial, debugSerial);
   ttu.reset();
-  ttu.join(appEui, appKey);
+
+  //the device will attempt a join every second till the join is successfull
+  while(!ttu.join(appEui, appKey)){
+      delay(1000);
+  }
+
+  digitalWrite(13, HIGH); //turn on LED to confirm join
 
   delay(6000);
   ttu.showStatus();
@@ -30,7 +43,16 @@ void setup()
 }
 
 void loop() {
-  ttu.sendString("Hello world!");
+
+  uint8_t light = analogRead(LightPin);
+  //put data into the data array
+  data[0] = lowByte(light);
+  data[1] = highByte(light);
+  //debug print
+  debugPrint("Transmitting Light level: ");
+  debugPrintLn(light);
+  //send data
+  ttu.sendBytes(data, sizeof(data));
 
   delay(20000);
 }
