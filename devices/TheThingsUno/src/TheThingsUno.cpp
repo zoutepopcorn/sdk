@@ -81,6 +81,10 @@ bool TheThingsUno::sendCommand(String cmd, const byte *buf, int length, int wait
 }
 
 void TheThingsUno::reset(bool adr, int sf, int fsb) {
+#if !ADR_SUPPORTED
+  adr = false;
+#endif
+
   modemStream->println("sys reset");
   String version = readLine(3000);
   if (version == "") {

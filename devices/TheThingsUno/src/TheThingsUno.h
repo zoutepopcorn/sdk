@@ -11,12 +11,14 @@
 #define DEFAULT_SF 7
 #define DEFAULT_FSB 7
 
-#ifndef PWRIDX_868
-  #define PWRIDX_868 1
-#endif
-#ifndef PWRIDX_915
-  #define PWRIDX_915 1
-#endif
+// Set ADR off as it is currently not supported by The Things Network
+// The RN2xx3 module slows down to SF12 when no datarate commands are
+// sent by the network, so disabling ADR is a work-around to avoid
+// all the modules slowing down to SF12
+#define ADR_SUPPORTED false
+
+#define PWRIDX_868 1
+#define PWRIDX_915 1
 
 #define debugPrintLn(...) { if (debugStream) debugStream->println(__VA_ARGS__); }
 #define debugPrint(...) { if (debugStream) debugStream->print(__VA_ARGS__); }
