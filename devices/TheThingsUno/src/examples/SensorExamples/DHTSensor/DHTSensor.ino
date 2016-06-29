@@ -38,7 +38,7 @@ void setup() {
 
   //the device will attempt a join every second till the join is successfull
   while(!ttu.join(appEui, appKey)){
-      delay(1000);
+      delay(6000);
   }
 
   digitalWrite(13, HIGH); //turn on LED to confirm join
@@ -55,14 +55,14 @@ void loop() {
   uint16_t temperature = dht.readTemperature(false)*100; //false = temp-Celsius //true = temp-farenheit
   uint16_t humidity = dht.readHumidity(false)*100;
   //put data into the data array
-  data[0] = lowByte(temperature);
-  data[1] = highByte(temperature);
-  data[2] = lowByte(humidity);
-  data[3] = highByte(humidity);
+  data[0] = highByte(temperature);
+  data[1] = lowByte(temperature);
+  data[2] = highByte(humidity);
+  data[3] = lowByte(humidity);
   //debug print
   debugPrint("Transmitting Temperature: ");
   debugPrintLn(temperature);
-  debugPrint(" Humidity: ");
+  debugPrint("Humidity: ");
   debugPrintLn(humidity);
   //send data
   ttu.sendBytes(data, sizeof(data));

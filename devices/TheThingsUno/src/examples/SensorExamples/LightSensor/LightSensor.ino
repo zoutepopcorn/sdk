@@ -30,7 +30,7 @@ void setup() {
 
   //the device will attempt a join every second till the join is successfull
   while(!ttu.join(appEui, appKey)){
-      delay(1000);
+      delay(6000);
   }
 
   digitalWrite(13, HIGH); //turn on LED to confirm join
@@ -44,10 +44,10 @@ void setup() {
 
 void loop() {
 
-  uint8_t light = analogRead(LightPin);
+  uint16_t light = analogRead(LightPin);
   //put data into the data array
-  data[0] = lowByte(light);
-  data[1] = highByte(light);
+  data[0] = highByte(light);
+  data[1] = lowByte(light);
   //debug print
   debugPrint("Transmitting Light level: ");
   debugPrintLn(light);
