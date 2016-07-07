@@ -27,9 +27,6 @@ const Client = class Client extends EventEmitter {
 
   _handleMessage(topic, message) {
     var parts = topic.split('/');
-    if (parts.length < 4)
-      return;
-
     var payload = JSON.parse(message.toString());
     switch (parts[3]) {
       case 'activations':
