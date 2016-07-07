@@ -50,8 +50,7 @@ The `fields` on the `uplink` event will be either filled with:
 
 - The result of the payload function tranformation if there are payload
   functions set for the application, or
-- The plain, untransformed payload.
-
+- The plain, untransformed payload in the `raw` property
 
 ## API
 
