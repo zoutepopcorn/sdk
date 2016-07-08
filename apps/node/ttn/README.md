@@ -21,6 +21,10 @@ var appEUI = '<insert AppEUI>';
 var accessKey = '<insert App Access Key>';
 var client = new ttn.Client('staging.thethingsnetwork.org', appEUI, accessKey);
 
+client.on('connect', function() {
+  console.log('connected')
+})
+
 client.on('uplink', function (msg) {
   // These are messages sent by devices on The Things Network
   // msg = {
@@ -42,6 +46,10 @@ client.on('error', function (err) {
   // TODO: Handle error
 })
 
+// Send a downlink message to the device
+var payload = new Buffer('01AB', 'hex')
+client.downlink('00000000973572D0', payload, '1h', 1)
+
 // End the client connection
 client.end()
 ```
@@ -59,7 +67,16 @@ The `fields` on the `uplink` event will be either filled with:
 Creates a new client that listens to events for your application.
 
 Arguments:
-- `broker` (`string`): The Things Network Handler's MQTT broker
+- `broker` (`string`): the Things Network Handler's MQTT broker
 - `appEUI` (`string`): the EUI for your application
 - `accessKey` (`string`): the application's access key
 
+### '#downlink(<devEUI>, <payload>, <ttl>, <port>)`
+
+Send a message to a device.
+
+Arguments:
+- `devEUI` (`string`): the DevEUI of the device
+- `payload` (`Buffer`): buffer containing binary data
+- `ttl` (`string`): time-to-live of the message (e.g. `1h`, `2d`, etc). If there's no opportunity to send the message within this window, the message will be dropped. Default: `1h`
+- `port` (`int`): port (default: `1`) 
