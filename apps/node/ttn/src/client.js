@@ -7,6 +7,8 @@ const EventEmitter = require('events');
 const Client = class Client extends EventEmitter {
   constructor(broker, appEUI, appAccessKey) {
     super();
+    this.appEUI = appEUI;
+
     this.client = mqtt.connect(util.format('mqtt://%s', broker), {
       username: appEUI,
       password: appAccessKey
@@ -20,6 +22,16 @@ const Client = class Client extends EventEmitter {
     this.client.end();
   }
 
+  downlink(devEUI, payload, ttl, port) {
+    var topic = util.format('%s/devices/%s/down', this.appEUI, devEUI);
+    var message = JSON.stringify({
+      payload: payload.toString('base64'),
+      ttl: ttl || '1h',
+      port: port || 1
+    });
+    this.client.publish(topic, message);
+  }
+
   _connected() {
     super.emit('connect');
     this.client.subscribe(['+/devices/+/activations', '+/devices/+/up']);
@@ -27,9 +39,6 @@ const Client = class Client extends EventEmitter {
 
   _handleMessage(topic, message) {
     var parts = topic.split('/');
-    if (parts.length < 4)
-      return;
-
     var payload = JSON.parse(message.toString());
     switch (parts[3]) {
       case 'activations':

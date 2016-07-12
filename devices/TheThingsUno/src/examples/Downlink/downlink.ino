@@ -20,7 +20,9 @@ void setup()
   delay(1000);
   ttu.init(loraSerial, debugSerial); //Initializing...
   ttu.reset();
-  ttu.join(appEui, appKey);
+  if (!ttu.join(appEui, appKey)) {
+    delay(6000);
+  }
 
   delay(6000);
   ttu.showStatus();

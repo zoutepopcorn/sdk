@@ -28,7 +28,7 @@ bool TheThingsUno::waitForOK(int waitTime, String okMessage) {
   }
 
   if (line != okMessage) {
-    debugPrintLn("Response is not OK");
+    debugPrintLn("Response is not OK: " + line);
     return false;
   }
 
@@ -170,8 +170,9 @@ bool TheThingsUno::personalize(const byte devAddr[4], const byte nwkSKey[16], co
   sendCommand("mac set appskey", appSKey, 16);
   sendCommand("mac join abp");
 
-  if (readLine() != "accepted") {
-    debugPrintLn("Personalize not accepted");
+  String response = readLine();
+  if (response != "accepted") {
+    debugPrintLn("Personalize not accepted: " + response);
     return false;
   }
 
@@ -184,15 +185,18 @@ bool TheThingsUno::join(const byte appEui[8], const byte appKey[16]) {
   sendCommand("mac set appeui", appEui, 8);
   sendCommand("mac set deveui " + devEui);
   sendCommand("mac set appkey", appKey, 16);
-  sendCommand("mac join otaa");
-
-  String response = readLine(10000);
-  if (response != "accepted") {
-    debugPrintLn("Join not accepted");
+  if (!sendCommand("mac join otaa")) {
+    debugPrintLn("Send join command failed");
     return false;
   }
 
-  debugPrintLn("Join accepted: " + response + ". Status: " + readValue("mac get status"));
+  String response = readLine(10000);
+  if (response != "accepted") {
+    debugPrintLn("Join not accepted: " + response);
+    return false;
+  }
+
+  debugPrintLn("Join accepted. Status: " + readValue("mac get status"));
   return true;
 }
 
