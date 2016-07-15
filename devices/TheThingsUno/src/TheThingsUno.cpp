@@ -155,9 +155,10 @@ void TheThingsUno::reset(bool adr, int sf, int fsb) {
 bool TheThingsUno::enableFsbChannels(int fsb) {
   int chLow = fsb > 0 ? (fsb - 1) * 8 : 0;
   int chHigh = fsb > 0 ? chLow + 7 : 71;
+  int ch500 = fsb + 63;
 
   for (int i = 0; i < 72; i++)
-    if (i == 70 || chLow <= i && i <= chHigh)
+    if (i == ch500 || chLow <= i && i <= chHigh)
       sendCommand("mac set ch status " + String(i) + " on");
     else
       sendCommand("mac set ch status " + String(i) + " off");
