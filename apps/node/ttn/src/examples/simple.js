@@ -18,6 +18,10 @@ client.on('uplink', function (msg) {
   //   counter: 44,
   //   metadata: { /* ... */ },
   // }
+  
+  // Display the text from the message
+  var txt = new Buffer(msg.fields.raw, 'base64').toString("ascii");
+  console.log("message: " + txt);
 
   // Schedule a reply
   var payload = new Buffer('01AB', 'hex')
